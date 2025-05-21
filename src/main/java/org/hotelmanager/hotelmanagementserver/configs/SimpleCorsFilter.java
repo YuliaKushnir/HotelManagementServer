@@ -15,10 +15,12 @@ import java.util.Map;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class SimpleCorsFilter implements Filter {
 
+//    private final String clientAppUrl ="http://localhost:4200/*";
+
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        Filter.super.init(filterConfig);
+//        Filter.super.init(filterConfig);
     }
 
     @Override
@@ -29,7 +31,7 @@ public class SimpleCorsFilter implements Filter {
         String originHeader = request.getHeader("Origin");
 
         response.setHeader("Access-Control-Allow-Origin", originHeader);
-//        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE");
         response.setHeader("Access-Control-Max-Age", "3600");
         response.setHeader("Access-Control-Allow-Headers", "*");
@@ -43,6 +45,6 @@ public class SimpleCorsFilter implements Filter {
 
     @Override
     public void destroy() {
-        Filter.super.destroy();
+//        Filter.super.destroy();
     }
 }
