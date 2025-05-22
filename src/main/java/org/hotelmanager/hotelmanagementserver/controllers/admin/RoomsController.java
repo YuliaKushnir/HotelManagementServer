@@ -1,5 +1,6 @@
 package org.hotelmanager.hotelmanagementserver.controllers.admin;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.hotelmanager.hotelmanagementserver.dto.RoomDto;
 import org.hotelmanager.hotelmanagementserver.services.admin.rooms.RoomsService;
@@ -28,6 +29,27 @@ public class RoomsController {
     @GetMapping("/rooms/{pageNumber}")
     public ResponseEntity<?> getAllRooms(@PathVariable int pageNumber) {
         return ResponseEntity.ok(roomsService.getAllRooms(pageNumber));
+    }
+
+    @GetMapping("/room/{id}")
+    public ResponseEntity<?> getRoomById(@PathVariable Long id){
+        try{
+            return ResponseEntity.ok(roomsService.getRoomById(id));
+        } catch(EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/room/{id}")
+    public ResponseEntity<?> updateRoom(@PathVariable Long id, @RequestBody RoomDto roomDto) {
+        boolean success = roomsService.updateRoom(id, roomDto);
+        if(success){
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
 }

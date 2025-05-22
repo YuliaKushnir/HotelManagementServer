@@ -1,5 +1,6 @@
 package org.hotelmanager.hotelmanagementserver.services.admin.rooms;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.hotelmanager.hotelmanagementserver.dto.RoomDto;
 import org.hotelmanager.hotelmanagementserver.dto.RoomsResponseDto;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -44,6 +46,31 @@ public class RoomsServiceImpl implements RoomsService {
         roomsResponseDto.setRoomDtoList(rooms.stream().map(Room::getRoomDto).collect(Collectors.toList()));
 
         return roomsResponseDto;
+    }
+
+    public RoomDto getRoomById(Long id){
+        Optional<Room> room = roomRepository.findById(id);
+        if(room.isPresent()){
+            return room.get().getRoomDto();
+        } else {
+            throw new EntityNotFoundException("Room with id " + id + " not found");
+        }
+
+    }
+
+    public boolean updateRoom(Long id, RoomDto roomDto) {
+        Optional<Room> room = roomRepository.findById(id);
+        if(room.isPresent()){
+            Room existingRoom = room.get();
+
+            existingRoom.setName(roomDto.getName());
+            existingRoom.setType(roomDto.getType());
+            existingRoom.setPrice(roomDto.getPrice());
+
+            roomRepository.save(existingRoom);
+            return true;
+        }
+        return false;
     }
 
 
