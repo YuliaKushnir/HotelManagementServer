@@ -37,7 +37,7 @@ public class RoomsServiceImpl implements RoomsService {
     }
 
     public RoomsResponseDto getAllRooms(int pageNumber){
-        Pageable pageable = PageRequest.of(pageNumber, 10);
+        Pageable pageable = PageRequest.of(pageNumber, 9);
         Page<Room> rooms = roomRepository.findAll(pageable);
 
         RoomsResponseDto roomsResponseDto = new RoomsResponseDto();
@@ -71,6 +71,15 @@ public class RoomsServiceImpl implements RoomsService {
             return true;
         }
         return false;
+    }
+
+    public void deleteRoom(Long id) {
+        Optional<Room> room = roomRepository.findById(id);
+        if(room.isPresent()){
+            roomRepository.deleteById(id);
+        } else {
+            throw new EntityNotFoundException("Room with id " + id + " not found");
+        }
     }
 
 
